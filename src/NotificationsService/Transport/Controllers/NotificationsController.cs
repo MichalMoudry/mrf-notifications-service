@@ -20,6 +20,12 @@ public sealed class NotificationsController : ControllerBase
         _mediator = mediator;
     }
 
+    [HttpGet("/count")]
+    public IResult GetNotificationsCount()
+    {
+        return Results.Ok(5);
+    }
+
     [HttpGet]
     public IResult GetNotifications()
     {
