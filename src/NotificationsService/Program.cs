@@ -1,5 +1,9 @@
 using System.Data;
+using FirebaseAdmin;
+using FluentValidation;
+using NotificationsService.Config;
 using NotificationsService.Service.Commands;
+using NotificationsService.Transport.Validation;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +18,7 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<InsertNotifCommandHandler>();
 });
+builder.Services.AddValidatorsFromAssemblyContaining<BatchStatRequestValidator>();
 
 // Connect to DB.
 var connectionString = builder.Environment.IsDevelopment()
@@ -36,5 +41,13 @@ app.UseAuthorization();
 app.UseHealthChecks("/health");
 
 app.MapControllers();
+
+FirebaseApp.Create(FirebaseConfig.GetFirebaseConfig());
+var firebaseAuth = FirebaseConfig.GetFirebaseAuth();
+app.Use(async (context, next) =>
+{
+    await context.Response.WriteAsync("Trying to parse JWT.");
+    await next.Invoke(context);
+});
 
 app.Run();
