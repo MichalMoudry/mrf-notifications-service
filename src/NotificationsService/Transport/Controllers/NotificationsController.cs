@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NotificationsService.Service.Api.Queries;
 
 namespace NotificationsService.Transport.Controllers;
 
@@ -7,6 +9,7 @@ namespace NotificationsService.Transport.Controllers;
 /// Controller for Notifications resource.
 /// </summary>
 [ApiController]
+[Authorize]
 [Route("[controller]")]
 public sealed class NotificationsController : ControllerBase
 {
@@ -20,10 +23,16 @@ public sealed class NotificationsController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet("/count")]
-    public IResult GetNotificationsCount()
+    /// <summary>
+    /// An API endpoint for obtaining user's unread notifications count.
+    /// </summary>
+    [HttpGet("Count")]
+    public async Task<IResult> GetNotificationsCount()
     {
-        return Results.Ok(5);
+        var id = HttpContext.User.Claims.First(i => i.Type == "user_id");
+        return Results.Ok(
+            await _mediator.Send(new GetNotificationCountQuery(id.Value))
+        );
     }
 
     [HttpGet]
@@ -35,7 +44,6 @@ public sealed class NotificationsController : ControllerBase
     [HttpDelete("/{notificationId:guid}")]
     public IResult DeleteNotification(Guid notificationId)
     {
-        _logger.LogInformation($"Delete notification with ID '{notificationId}'.");
         return Results.Ok();
     }
 }

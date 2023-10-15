@@ -1,7 +1,7 @@
 using System.Data;
-using FirebaseAdmin;
 using FluentValidation;
-using NotificationsService.Config;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using NotificationsService.Service.Commands;
 using NotificationsService.Transport.Validation;
 using Npgsql;
@@ -14,6 +14,22 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
 
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://securetoken.google.com/ocr-microservice-project";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = "https://securetoken.google.com/ocr-microservice-project",
+            ValidateAudience = true,
+            ValidAudience = "ocr-microservice-project",
+            ValidateLifetime = true
+        };
+    });
+
+// MediatR & FluentValidation
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<InsertNotifCommandHandler>();
@@ -41,13 +57,5 @@ app.UseAuthorization();
 app.UseHealthChecks("/health");
 
 app.MapControllers();
-
-FirebaseApp.Create(FirebaseConfig.GetFirebaseConfig());
-var firebaseAuth = FirebaseConfig.GetFirebaseAuth();
-app.Use(async (context, next) =>
-{
-    await context.Response.WriteAsync("Trying to parse JWT.");
-    await next.Invoke(context);
-});
 
 app.Run();

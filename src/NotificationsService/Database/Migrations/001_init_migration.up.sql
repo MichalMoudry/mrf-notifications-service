@@ -1,6 +1,8 @@
 ﻿BEGIN;
 
-CREATE TABLE "Notifications" (
+CREATE SCHEMA "NotificationsDb";
+
+CREATE TABLE "NotificationsDb.Notifications" (
     "Id" UUID PRIMARY KEY,
     "Title" VARCHAR(255) NOT NULL,
     "Content" VARCHAR(255) NOT NULL,
