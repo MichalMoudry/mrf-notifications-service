@@ -10,16 +10,8 @@ public sealed class BatchStatRequestValidator : AbstractValidator<BatchStatReque
 {
     public BatchStatRequestValidator()
     {
-        RuleFor(i => i.StartDate)
-            .NotEmpty();
-        RuleFor(i => i.EndDate)
-            .NotEmpty()
-            .GreaterThan(i => i.StartDate);
         RuleFor(i => i.Status)
             .NotNull()
             .IsInEnum();
-        RuleFor(i => i.NumberOfDocuments)
-            .NotEmpty()
-            .GreaterThan(0);
     }
 }

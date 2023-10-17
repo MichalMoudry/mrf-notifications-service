@@ -19,9 +19,9 @@ public sealed class GetNotificationCountQueryHandler : IRequestHandler<GetNotifi
 
     public async Task<int> Handle(GetNotificationCountQuery request, CancellationToken cancellationToken)
     {
-        var res = await _connection.QueryAsync<int>(
-            $"SELECT COUNT(Id) FROM NotificationsDb.Notifications WHERE UserId = '{request.UserId}'"
+        return await _connection.QueryFirstAsync<int>(
+            $"SELECT COUNT(Id) FROM notifications.Notifications WHERE UserId = '@UserId';",
+            new { request.UserId }
         );
-        return 5;
     }
 }

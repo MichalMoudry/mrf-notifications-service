@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NotificationsService.Database.Model;
 using NotificationsService.Service.Api.Handlers;
+using NotificationsService.Service.Model;
 using NotificationsService.Transport.Contracts;
 
 namespace NotificationsService.Transport.Controllers;
@@ -52,6 +53,7 @@ public sealed class DaprController : ControllerBase
                 request.Data.Status == BatchStatus.Success
                     ? NotificationType.Positive
                     : NotificationType.Negative,
+                NotificationCategory.BatchFinished,
                 request.Data.UserId
             )
         );

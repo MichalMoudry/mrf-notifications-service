@@ -8,8 +8,5 @@ namespace NotificationsService.Transport.Contracts;
 public sealed record BatchStatRequest(
     Guid BatchId,
     string UserId,
-    DateTime StartDate,
-    DateTime EndDate,
-    int NumberOfDocuments,
     BatchStatus Status
 );

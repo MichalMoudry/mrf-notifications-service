@@ -1,5 +1,5 @@
 ﻿BEGIN;
 
-DROP TABLE Notifications;
+DROP TABLE notifications."Notifications";
 
 COMMIT;

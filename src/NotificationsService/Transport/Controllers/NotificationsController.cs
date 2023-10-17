@@ -38,10 +38,11 @@ public sealed class NotificationsController : ControllerBase
     [HttpGet]
     public IResult GetNotifications()
     {
+        var id = HttpContext.User.Claims.First(i => i.Type == "user_id");
         return Results.Ok("Test");
     }
 
-    [HttpDelete("/{notificationId:guid}")]
+    [HttpDelete("{notificationId:guid}")]
     public IResult DeleteNotification(Guid notificationId)
     {
         return Results.Ok();
