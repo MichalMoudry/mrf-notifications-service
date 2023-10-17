@@ -2,8 +2,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using NotificationsService.Database.Model;
-using NotificationsService.Service.Api.Handlers;
+using NotificationsService.Service.Api.Commands;
 using NotificationsService.Service.Model;
 using NotificationsService.Transport.Contracts;
 

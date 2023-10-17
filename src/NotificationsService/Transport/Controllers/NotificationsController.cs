@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NotificationsService.Service.Api.Commands;
 using NotificationsService.Service.Api.Queries;
 
 namespace NotificationsService.Transport.Controllers;
@@ -29,22 +30,26 @@ public sealed class NotificationsController : ControllerBase
     [HttpGet("Count")]
     public async Task<IResult> GetNotificationsCount()
     {
-        var id = HttpContext.User.Claims.First(i => i.Type == "user_id");
+        var idClaim = HttpContext.User.Claims.First(i => i.Type == "user_id");
         return Results.Ok(
-            await _mediator.Send(new GetNotificationCountQuery(id.Value))
+            await _mediator.Send(new GetNotificationCountQuery(idClaim.Value))
         );
     }
 
     [HttpGet]
-    public IResult GetNotifications()
+    public async Task<IResult> GetNotifications()
     {
-        var id = HttpContext.User.Claims.First(i => i.Type == "user_id");
-        return Results.Ok("Test");
+        var idClaim = HttpContext.User.Claims.First(i => i.Type == "user_id");
+        return Results.Ok(
+            await _mediator.Send(new GetNotificationsQuery(idClaim.Value))
+        );
     }
 
     [HttpDelete("{notificationId:guid}")]
-    public IResult DeleteNotification(Guid notificationId)
+    public async Task<IResult> DeleteNotification(Guid notificationId)
     {
-        return Results.Ok();
+        return Results.Ok(
+            await _mediator.Send(new MarkDeletedNotifCommand(notificationId))
+        );
     }
 }

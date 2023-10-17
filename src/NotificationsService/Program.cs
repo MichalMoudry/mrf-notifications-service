@@ -6,6 +6,7 @@ using NotificationsService.Service.Commands;
 using NotificationsService.Transport.Validation;
 using Npgsql;
 
+Console.WriteLine(@"Hello from notifications service! ʕ•ᴥ•ʔ");
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();

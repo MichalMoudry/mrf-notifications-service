@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace NotificationsService.Service.Api.Handlers;
+namespace NotificationsService.Service.Api.Commands;
 
 /// <summary>
 /// Command for marking a notification as deleted (but not completely deleted from the database).

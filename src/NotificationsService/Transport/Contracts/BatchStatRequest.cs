@@ -1,4 +1,4 @@
-using NotificationsService.Database.Model;
+using NotificationsService.Service.Model;
 
 namespace NotificationsService.Transport.Contracts;
 

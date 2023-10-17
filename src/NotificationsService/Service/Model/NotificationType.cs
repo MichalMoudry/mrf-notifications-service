@@ -1,4 +1,4 @@
-﻿namespace NotificationsService.Database.Model;
+﻿namespace NotificationsService.Service.Model;
 
 /// <summary>
 /// An enumeration for representing a type of a notification.

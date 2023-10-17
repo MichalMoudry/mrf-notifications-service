@@ -2,7 +2,7 @@
 using Dapper;
 using MediatR;
 using NotificationsService.Database.Queries;
-using NotificationsService.Service.Api.Handlers;
+using NotificationsService.Service.Api.Commands;
 using NotificationsService.Service.Helpers;
 
 namespace NotificationsService.Service.Commands;
@@ -23,10 +23,7 @@ public sealed class InsertNotifCommandHandler : IRequestHandler<InsertNotifComma
     {
         var now = DateTimeOffset.Now;
         var content = NotificationContentHelper.GetNotificationContent(request.Category);
-        if (content == null)
-        {
-            return false;
-        }
+        if (content == null) return false;
 
         using var transaction = _connection.BeginTransaction();
         var res = await _connection.ExecuteAsync(

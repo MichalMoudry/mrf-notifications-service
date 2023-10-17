@@ -67,5 +67,13 @@ namespace NotificationsService.Database.Queries {
                 return ResourceManager.GetString("InsertNotification", resourceCulture);
             }
         }
+
+        internal static string GetNotifications
+        {
+            get
+            {
+                return ResourceManager.GetString("GetNotifications", resourceCulture);
+            }
+        }
     }
 }
