@@ -14,13 +14,10 @@ namespace NotificationsService.Transport.Controllers;
 [Route("[controller]")]
 public sealed class NotificationsController : ControllerBase
 {
-    private readonly ILogger<NotificationsController> _logger;
-
     private readonly IMediator _mediator;
 
-    public NotificationsController(ILogger<NotificationsController> logger, IMediator mediator)
+    public NotificationsController(IMediator mediator)
     {
-        _logger = logger;
         _mediator = mediator;
     }
 
