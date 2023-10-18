@@ -25,4 +25,11 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Update="Database\Queries\SqlQueries.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SqlQueries.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

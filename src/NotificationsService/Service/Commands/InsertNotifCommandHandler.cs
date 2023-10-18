@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using Dapper;
 using MediatR;
-using NotificationsService.Database.Queries;
 using NotificationsService.Service.Api.Commands;
 using NotificationsService.Service.Helpers;
 
@@ -27,7 +26,7 @@ public sealed class InsertNotifCommandHandler : IRequestHandler<InsertNotifComma
 
         using var transaction = _connection.BeginTransaction();
         var res = await _connection.ExecuteAsync(
-            SqlQueries.InsertNotification,
+            "SqlQueries.InsertNotification",
             new
             {
                 Id = Guid.NewGuid(),

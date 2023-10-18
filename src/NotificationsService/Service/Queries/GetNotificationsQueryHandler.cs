@@ -1,7 +1,6 @@
 using System.Data;
 using Dapper;
 using MediatR;
-using NotificationsService.Database.Queries;
 using NotificationsService.Service.Api.Queries;
 using NotificationsService.Service.Model.Dto;
 
@@ -22,7 +21,7 @@ public sealed class GetNotificationsQueryHandler : IRequestHandler<GetNotificati
     public async Task<IEnumerable<NotificationDto>> Handle(GetNotificationsQuery request, CancellationToken cancellationToken)
     {
         return await _connection.QueryAsync<NotificationDto>(
-            SqlQueries.GetNotifications,
+            "SqlQueries.GetNotifications",
             new { request.UserId }
         );
     }
