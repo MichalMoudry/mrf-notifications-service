@@ -1,6 +1,7 @@
 using System.Data;
 using Dapper;
 using MediatR;
+using NotificationsService.Database.Queries;
 using NotificationsService.Service.Api.Commands;
 
 namespace NotificationsService.Service.Commands;
@@ -19,9 +20,10 @@ public sealed class MarkDeletedNotifCommandHandler : IRequestHandler<MarkDeleted
 
     public async Task<bool> Handle(MarkDeletedNotifCommand request, CancellationToken cancellationToken)
     {
+        _connection.Open();
         using var transaction = _connection.BeginTransaction();
         await _connection.ExecuteAsync(
-            "UPDATE notifications.Notifications SET Notifications.IsDeleted = 1 WHERE Notifications.Id = @NotificationId;",
+            SqlQueries.SoftDeleteNotification,
             new { request.NotificationId },
             transaction: transaction
         );

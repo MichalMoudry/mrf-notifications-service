@@ -80,11 +80,11 @@ namespace NotificationsService.Database.Queries {
         
         /// <summary>
         ///   Looks up a localized string similar to SELECT
-        ///    count(n.&quot;Id&quot;)
+        ///    COUNT(n.&quot;Id&quot;)
         ///FROM
         ///    notifications.&quot;Notifications&quot; as n
         ///WHERE
-        ///    n.&quot;UserId&quot; = &apos;@UserId&apos;;.
+        ///    n.&quot;UserId&quot; = @UserId AND n.&quot;IsDeleted&quot; IS FALSE.
         /// </summary>
         public static string GetNotificationsCount {
             get {
@@ -94,13 +94,26 @@ namespace NotificationsService.Database.Queries {
         
         /// <summary>
         ///   Looks up a localized string similar to INSERT INTO
-        ///    notifications.&quot;Notifications&quot; (Id, Title, Content, Type, UserId, IsDeleted, DateAdded, DateUpdated)
-        ///VALUES
-        ///    (@Id, @Title, @Content, @Type, @UserId, @IsDeleted, @DateAdded, @DateUpdated);.
+        ///    notifications.&quot;Notifications&quot;
+        ///VALUES (@Id, @Title, @Content, @Type, @UserId, @IsDeleted, @Now, @Now).
         /// </summary>
         public static string InsertNotification {
             get {
                 return ResourceManager.GetString("InsertNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE
+        ///    notifications.&quot;Notifications&quot;
+        ///SET
+        ///    &quot;IsDeleted&quot; = true
+        ///WHERE
+        ///    &quot;Id&quot; = @NotificationId.
+        /// </summary>
+        public static string SoftDeleteNotification {
+            get {
+                return ResourceManager.GetString("SoftDeleteNotification", resourceCulture);
             }
         }
     }
