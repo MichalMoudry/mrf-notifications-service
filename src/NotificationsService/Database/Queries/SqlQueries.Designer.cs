@@ -62,19 +62,33 @@ namespace NotificationsService.Database.Queries {
         
         /// <summary>
         ///   Looks up a localized string similar to SELECT
-        ///    n.Id,
-        ///    n.Title,
-        ///    n.Content,
-        ///    n.Type,
-        ///    n.DateAdded
+        ///    n.&quot;Id&quot;,
+        ///    n.&quot;Title&quot;,
+        ///    n.&quot;Content&quot;,
+        ///    n.&quot;Type&quot;,
+        ///    n.&quot;DateAdded&quot;
         ///FROM
         ///    notifications.&quot;Notifications&quot; as n
         ///WHERE
-        ///    n.UserId = @UserId AND n.IsDeleted IS FALSE;.
+        ///    n.&quot;UserId&quot; = @UserId AND n.&quot;IsDeleted&quot; IS FALSE;.
         /// </summary>
         public static string GetNotifications {
             get {
                 return ResourceManager.GetString("GetNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT
+        ///    count(n.&quot;Id&quot;)
+        ///FROM
+        ///    notifications.&quot;Notifications&quot; as n
+        ///WHERE
+        ///    n.&quot;UserId&quot; = &apos;@UserId&apos;;.
+        /// </summary>
+        public static string GetNotificationsCount {
+            get {
+                return ResourceManager.GetString("GetNotificationsCount", resourceCulture);
             }
         }
         

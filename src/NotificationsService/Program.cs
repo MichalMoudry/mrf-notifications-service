@@ -26,7 +26,7 @@ builder.Services
             ValidIssuer = "https://securetoken.google.com/ocr-microservice-project",
             ValidateAudience = true,
             ValidAudience = "ocr-microservice-project",
-            ValidateLifetime = true
+            ValidateLifetime = !builder.Environment.IsDevelopment()
         };
     });
 
@@ -35,15 +35,13 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<InsertNotifCommandHandler>();
 });
-builder.Services.AddValidatorsFromAssemblyContaining<BatchStatRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<BatchFinishedEventValidator>();
 
 // Connect to DB.
 var connectionString = builder.Environment.IsDevelopment()
     ? builder.Configuration["DbConnection"]
     : Environment.GetEnvironmentVariable("DB_CONN");
-builder.Services.AddTransient<IDbConnection>(
-    _ => new NpgsqlConnection(connectionString)
-);
+builder.Services.AddTransient<IDbConnection>(_ => new NpgsqlConnection(connectionString));
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -57,6 +55,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 app.UseHealthChecks("/health");
 
+app.MapSubscribeHandler();
 app.MapControllers();
 
 app.Run();

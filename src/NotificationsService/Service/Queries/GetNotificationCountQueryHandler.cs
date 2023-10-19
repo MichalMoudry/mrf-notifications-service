@@ -1,6 +1,7 @@
 using System.Data;
 using Dapper;
 using MediatR;
+using NotificationsService.Database.Queries;
 using NotificationsService.Service.Api.Queries;
 
 namespace NotificationsService.Service.Queries;
@@ -20,7 +21,7 @@ public sealed class GetNotificationCountQueryHandler : IRequestHandler<GetNotifi
     public async Task<int> Handle(GetNotificationCountQuery request, CancellationToken cancellationToken)
     {
         return await _connection.QuerySingleAsync<int>(
-            $"SELECT COUNT(Id) FROM notifications.Notifications WHERE UserId = '@UserId';",
+            SqlQueries.GetNotificationsCount,
             new { request.UserId }
         );
     }

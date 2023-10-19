@@ -21,10 +21,12 @@ public sealed class InsertNotifCommandHandler : IRequestHandler<InsertNotifComma
     
     public async Task<bool> Handle(InsertNotifCommand request, CancellationToken cancellationToken)
     {
-        var now = DateTimeOffset.Now;
+        var now = DateTime.UtcNow;
         var content = NotificationContentHelper.GetNotificationContent(request.Category);
         if (content == null) return false;
+        content = string.Format(content, request.BatchId);
 
+        _connection.Open();
         using var transaction = _connection.BeginTransaction();
         var res = await _connection.ExecuteAsync(
             SqlQueries.InsertNotification,
@@ -36,8 +38,7 @@ public sealed class InsertNotifCommandHandler : IRequestHandler<InsertNotifComma
                 request.Type,
                 request.UserId,
                 IsDeleted = false,
-                DateAdded = now,
-                DateUpdated = now
+                Now = now
             },
             transaction: transaction
         );

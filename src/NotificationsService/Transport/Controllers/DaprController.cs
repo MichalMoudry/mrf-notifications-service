@@ -19,11 +19,11 @@ public sealed class DaprController : ControllerBase
 
     private readonly IMediator _mediator;
 
-    private readonly IValidator<BatchStatRequest> _batchStatValidator;
+    private readonly IValidator<BatchFinishedEvent> _batchStatValidator;
 
     public DaprController(
         ILogger<DaprController> logger,
-        IValidator<BatchStatRequest> batchStatValidator,
+        IValidator<BatchFinishedEvent> batchStatValidator,
         IMediator mediator)
     {
         _logger = logger;
@@ -36,7 +36,7 @@ public sealed class DaprController : ControllerBase
     /// </summary>
     [HttpPost]
     [Topic("mrf_pub_sub", "batch-finish")]
-    public async Task<IResult> BatchCompleted([FromBody] CloudEvent<BatchStatRequest> request)
+    public async Task<IResult> BatchCompleted([FromBody] CloudEvent<BatchFinishedEvent> request)
     {
         var validationResult = await _batchStatValidator
             .ValidateAsync(request.Data);
@@ -53,6 +53,7 @@ public sealed class DaprController : ControllerBase
                     ? NotificationType.Positive
                     : NotificationType.Negative,
                 NotificationCategory.BatchFinished,
+                request.Data.BatchId,
                 request.Data.UserId
             )
         );

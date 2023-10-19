@@ -9,7 +9,7 @@ public static class NotificationContentHelper
 {
     private static readonly Dictionary<NotificationCategory, string> NotificationContents = new()
     {
-        { NotificationCategory.BatchFinished, "Batch '{0}' has finished processing." }
+        { NotificationCategory.BatchFinished, "Batch \"{0}\" has finished processing." }
     };
 
     public static string? GetNotificationContent(NotificationCategory category)

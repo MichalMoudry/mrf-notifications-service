@@ -21,7 +21,7 @@ public sealed class MarkDeletedNotifCommandHandler : IRequestHandler<MarkDeleted
     {
         using var transaction = _connection.BeginTransaction();
         await _connection.ExecuteAsync(
-            "UPDATE notifications.Notifications SET IsDeleted = 1 WHERE Id = @NotificationId;",
+            "UPDATE notifications.Notifications SET Notifications.IsDeleted = 1 WHERE Notifications.Id = @NotificationId;",
             new { request.NotificationId },
             transaction: transaction
         );
