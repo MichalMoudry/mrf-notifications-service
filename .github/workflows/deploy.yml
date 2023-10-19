@@ -73,6 +73,6 @@ jobs:
             az containerapp dapr enable \
               -n user-service \
               -g ${{ secrets.AZURE_RESOURCE_GROUP }} \
-              --dapr-app-id userservice \
+              --dapr-app-id notifications-service \
               --dapr-app-protocol http \
               --dapr-app-port 80
