@@ -45,8 +45,8 @@ public sealed class NotificationsController : ControllerBase
     [HttpDelete("{notificationId:guid}")]
     public async Task<IResult> DeleteNotification(Guid notificationId)
     {
-        return Results.Ok(
-            await _mediator.Send(new MarkDeletedNotifCommand(notificationId))
-        );
+        return await _mediator.Send(new MarkDeletedNotifCommand(notificationId))
+            ? Results.Ok()
+            : Results.StatusCode(StatusCodes.Status500InternalServerError);
     }
 }
