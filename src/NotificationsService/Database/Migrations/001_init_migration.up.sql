@@ -1,4 +1,4 @@
-﻿BEGIN;
+BEGIN;
 
 CREATE TABLE notifications."Notifications" (
     "Id" UUID PRIMARY KEY,

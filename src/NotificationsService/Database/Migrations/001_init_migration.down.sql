@@ -1,4 +1,4 @@
-﻿BEGIN;
+BEGIN;
 
 DROP TABLE notifications."Notifications";
 
