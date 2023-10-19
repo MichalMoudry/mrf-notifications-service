@@ -30,7 +30,7 @@ jobs:
         with:
           context: ./src
           push: true
-          tags: michalmoudry/user-service:latest
+          tags: michalmoudry/notifications-service:latest
           labels: ${{ steps.meta.outputs.labels }}
 
   deploy:
@@ -46,3 +46,33 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Update subscription in app's config file
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: "[subscription_id]"
+          replace: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          regex: false
+          include: "**app_template.yml"
+
+      - name: Deploy Container App
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          imageToDeploy: docker.io/michalmoudry/notifications-service:latest
+          resourceGroup: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          containerAppEnvironment: microservice-ref-framework-env
+          containerAppName: notifications-service
+          targetPort: 80
+          ingress: external
+          yamlConfigPath: ./.azure/app_template.yml
+
+      - name: Enable dapr for a Container App
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az containerapp dapr enable \
+              -n user-service \
+              -g ${{ secrets.AZURE_RESOURCE_GROUP }} \
+              --dapr-app-id userservice \
+              --dapr-app-protocol http \
+              --dapr-app-port 80

@@ -1,6 +1,9 @@
 ﻿using System.Data;
+using Dapper;
 using MediatR;
-using NotificationsService.Service.Api.Handlers;
+using NotificationsService.Database.Queries;
+using NotificationsService.Service.Api.Commands;
+using NotificationsService.Service.Helpers;
 
 namespace NotificationsService.Service.Commands;
 
@@ -16,8 +19,30 @@ public sealed class InsertNotifCommandHandler : IRequestHandler<InsertNotifComma
         _connection = connection;
     }
     
-    public Task<bool> Handle(InsertNotifCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(InsertNotifCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var now = DateTime.UtcNow;
+        var content = NotificationContentHelper.GetNotificationContent(request.Category);
+        if (content == null) return false;
+        content = string.Format(content, request.BatchId);
+
+        _connection.Open();
+        using var transaction = _connection.BeginTransaction();
+        var res = await _connection.ExecuteAsync(
+            SqlQueries.InsertNotification,
+            new
+            {
+                Id = Guid.NewGuid(),
+                request.Title,
+                Content = content,
+                request.Type,
+                request.UserId,
+                IsDeleted = false,
+                Now = now
+            },
+            transaction: transaction
+        );
+        transaction.Commit();
+        return res >= 0;
     }
 }

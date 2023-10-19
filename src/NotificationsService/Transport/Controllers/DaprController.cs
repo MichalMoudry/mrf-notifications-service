@@ -2,8 +2,8 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using NotificationsService.Database.Model;
-using NotificationsService.Service.Api.Handlers;
+using NotificationsService.Service.Api.Commands;
+using NotificationsService.Service.Model;
 using NotificationsService.Transport.Contracts;
 
 namespace NotificationsService.Transport.Controllers;
@@ -19,11 +19,11 @@ public sealed class DaprController : ControllerBase
 
     private readonly IMediator _mediator;
 
-    private readonly IValidator<BatchStatRequest> _batchStatValidator;
+    private readonly IValidator<BatchFinishedEvent> _batchStatValidator;
 
     public DaprController(
         ILogger<DaprController> logger,
-        IValidator<BatchStatRequest> batchStatValidator,
+        IValidator<BatchFinishedEvent> batchStatValidator,
         IMediator mediator)
     {
         _logger = logger;
@@ -36,7 +36,7 @@ public sealed class DaprController : ControllerBase
     /// </summary>
     [HttpPost]
     [Topic("mrf_pub_sub", "batch-finish")]
-    public async Task<IResult> BatchCompleted([FromBody] CloudEvent<BatchStatRequest> request)
+    public async Task<IResult> BatchCompleted([FromBody] CloudEvent<BatchFinishedEvent> request)
     {
         var validationResult = await _batchStatValidator
             .ValidateAsync(request.Data);
@@ -52,6 +52,8 @@ public sealed class DaprController : ControllerBase
                 request.Data.Status == BatchStatus.Success
                     ? NotificationType.Positive
                     : NotificationType.Negative,
+                NotificationCategory.BatchFinished,
+                request.Data.BatchId,
                 request.Data.UserId
             )
         );

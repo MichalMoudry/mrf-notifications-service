@@ -1,11 +1,12 @@
 using System.Data;
-using FirebaseAdmin;
 using FluentValidation;
-using NotificationsService.Config;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using NotificationsService.Service.Commands;
 using NotificationsService.Transport.Validation;
 using Npgsql;
 
+Console.WriteLine(@"Hello from notifications service! ʕ•ᴥ•ʔ");
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -14,19 +15,33 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
 
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://securetoken.google.com/ocr-microservice-project";
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = "https://securetoken.google.com/ocr-microservice-project",
+            ValidateAudience = true,
+            ValidAudience = "ocr-microservice-project",
+            ValidateLifetime = !builder.Environment.IsDevelopment()
+        };
+    });
+
+// MediatR & FluentValidation
 builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssemblyContaining<InsertNotifCommandHandler>();
 });
-builder.Services.AddValidatorsFromAssemblyContaining<BatchStatRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<BatchFinishedEventValidator>();
 
 // Connect to DB.
 var connectionString = builder.Environment.IsDevelopment()
     ? builder.Configuration["DbConnection"]
     : Environment.GetEnvironmentVariable("DB_CONN");
-builder.Services.AddTransient<IDbConnection>(
-    _ => new NpgsqlConnection(connectionString)
-);
+builder.Services.AddTransient<IDbConnection>(_ => new NpgsqlConnection(connectionString));
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -40,14 +55,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 app.UseHealthChecks("/health");
 
+app.MapSubscribeHandler();
 app.MapControllers();
-
-FirebaseApp.Create(FirebaseConfig.GetFirebaseConfig());
-var firebaseAuth = FirebaseConfig.GetFirebaseAuth();
-app.Use(async (context, next) =>
-{
-    await context.Response.WriteAsync("Trying to parse JWT.");
-    await next.Invoke(context);
-});
 
 app.Run();

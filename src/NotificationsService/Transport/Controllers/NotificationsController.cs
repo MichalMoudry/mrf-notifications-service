@@ -1,5 +1,8 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NotificationsService.Service.Api.Commands;
+using NotificationsService.Service.Api.Queries;
 
 namespace NotificationsService.Transport.Controllers;
 
@@ -7,35 +10,43 @@ namespace NotificationsService.Transport.Controllers;
 /// Controller for Notifications resource.
 /// </summary>
 [ApiController]
+[Authorize]
 [Route("[controller]")]
 public sealed class NotificationsController : ControllerBase
 {
-    private readonly ILogger<NotificationsController> _logger;
-
     private readonly IMediator _mediator;
 
-    public NotificationsController(ILogger<NotificationsController> logger, IMediator mediator)
+    public NotificationsController(IMediator mediator)
     {
-        _logger = logger;
         _mediator = mediator;
     }
 
-    [HttpGet("/count")]
-    public IResult GetNotificationsCount()
+    /// <summary>
+    /// An API endpoint for obtaining user's unread notifications count.
+    /// </summary>
+    [HttpGet("Count")]
+    public async Task<IResult> GetNotificationsCount()
     {
-        return Results.Ok(5);
+        var idClaim = HttpContext.User.Claims.First(i => i.Type == "user_id");
+        return Results.Ok(
+            await _mediator.Send(new GetNotificationCountQuery(idClaim.Value))
+        );
     }
 
     [HttpGet]
-    public IResult GetNotifications()
+    public async Task<IResult> GetNotifications()
     {
-        return Results.Ok("Test");
+        var idClaim = HttpContext.User.Claims.First(i => i.Type == "user_id");
+        return Results.Ok(
+            await _mediator.Send(new GetNotificationsQuery(idClaim.Value))
+        );
     }
 
-    [HttpDelete("/{notificationId:guid}")]
-    public IResult DeleteNotification(Guid notificationId)
+    [HttpDelete("{notificationId:guid}")]
+    public async Task<IResult> DeleteNotification(Guid notificationId)
     {
-        _logger.LogInformation($"Delete notification with ID '{notificationId}'.");
-        return Results.Ok();
+        return Results.Ok(
+            await _mediator.Send(new MarkDeletedNotifCommand(notificationId))
+        );
     }
 }
