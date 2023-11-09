@@ -90,7 +90,7 @@ jobs:
         with:
           inlineScript: |
             az containerapp dapr enable \
-              -n user-service \
+              -n notifications-service \
               -g ${{ secrets.AZURE_RESOURCE_GROUP }} \
               --dapr-app-id notifications-service \
               --dapr-app-protocol http \
