@@ -35,15 +35,12 @@ public sealed class DaprController : ControllerBase
     /// An endpoint method for handling HTTP requests for sending stats about finished document batches.
     /// </summary>
     [HttpPost]
-    [Topic("mrf_pub_sub", "batch-finish")]
+    [Topic("mrf-pub-sub", "batch-finish")]
     public async Task<IResult> BatchCompleted([FromBody] CloudEvent<BatchFinishedEvent> request)
     {
-        var validationResult = await _batchStatValidator
-            .ValidateAsync(request.Data);
+        var validationResult = await _batchStatValidator.ValidateAsync(request.Data);
         if (!validationResult.IsValid)
-        {
             return Results.BadRequest(validationResult.Errors);
-        }
         _logger.LogInformation("Received an information about a completed batch");
 
         var res = await _mediator.Send(
