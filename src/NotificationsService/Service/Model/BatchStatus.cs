@@ -5,6 +5,6 @@ namespace NotificationsService.Service.Model;
 /// </summary>
 public enum BatchStatus
 {
-    Success = 0,
-    Failed = 1
+    Success = 1,
+    Failed = 2
 }
