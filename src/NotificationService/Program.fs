@@ -1,32 +1,27 @@
 namespace NotificationService
 #nowarn "20"
 
-open Suave
-open Suave.Filters
-open Suave.Operators
-open Suave.Successful
-open NotificationService.Tranport.Contracts
+open Microsoft.AspNetCore.Builder
+open Microsoft.Extensions.DependencyInjection
+open NotificationService.Transport
+open Giraffe
 
 [<Sealed>]
 module Program =
-    open System.Threading
     let exitCode = 0
-
-    let app =
-        choose [ GET >=> choose
-            [ path "/health" >=> OK "Healthy"
-              path "/temp" >=> OK (System.Text.Json.JsonSerializer.Serialize({ Id = System.Guid.NewGuid(); TestName = ""; DateAdded = System.DateTimeOffset.Now })) ]
-        ]
 
     [<EntryPoint>]
     let main args =
-        let ctx = new CancellationTokenSource()
-        let cfg = { defaultConfig with cancellationToken = ctx.Token }
+        printfn "Hello from notifications service! ʕ•ᴥ•ʔ"
 
-        let _, server = startWebServerAsync cfg app
-        Async.Start(server, ctx.Token)
-        System.Console.ReadKey true |> ignore
+        let builder = WebApplication.CreateBuilder()
+        builder.Services.AddMediatR(fun cfg ->
+            cfg.RegisterServicesFromAssemblyContaining<Initializer>() |> ignore
+        )
+        builder.Services.AddGiraffe()
 
-        ctx.Cancel()
+        let app = builder.Build()
+        app.UseGiraffe(Initializer().Initialize())
+        app.Run()
 
         exitCode
