@@ -1,7 +1,6 @@
 SELECT
     n."Id",
-    n."Title",
-    n."Content",
+    n."ContentKey",
     n."Type",
     n."DateAdded"
 FROM

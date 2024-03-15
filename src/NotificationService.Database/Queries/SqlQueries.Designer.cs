@@ -63,8 +63,7 @@ namespace NotificationService.Database.Queries {
         /// <summary>
         ///   Looks up a localized string similar to SELECT
         ///    n.&quot;Id&quot;,
-        ///    n.&quot;Title&quot;,
-        ///    n.&quot;Content&quot;,
+        ///    n.&quot;ContentKey&quot;,
         ///    n.&quot;Type&quot;,
         ///    n.&quot;DateAdded&quot;
         ///FROM
@@ -95,11 +94,25 @@ namespace NotificationService.Database.Queries {
         /// <summary>
         ///   Looks up a localized string similar to INSERT INTO
         ///    &quot;Notifications&quot;
-        ///VALUES (@Id, @Title, @Content, @Type, @UserId, @IsDeleted, @Now, @Now).
+        ///VALUES (@Id, @ContentKey, @Type, @UserId, @IsDeleted, @Now, @Now).
         /// </summary>
         internal static string InsertNotification {
             get {
                 return ResourceManager.GetString("InsertNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UPDATE
+        ///    &quot;Notifications&quot;
+        ///SET
+        ///    &quot;IsDeleted&quot; = true
+        ///WHERE
+        ///    &quot;Id&quot; = @NotificationId.
+        /// </summary>
+        internal static string SoftDeleteNotification {
+            get {
+                return ResourceManager.GetString("SoftDeleteNotification", resourceCulture);
             }
         }
     }

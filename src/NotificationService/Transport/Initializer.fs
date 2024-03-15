@@ -10,13 +10,10 @@ type Initializer() =
         fun (next : HttpFunc) (ctx : HttpContext) ->
             task {
                 let mediatr = ctx.GetService<IMediator>()
-                let userId = ctx.User.Claims |> Seq.find(fun i -> i.Type = "user_id")
+                //let userId = ctx.User.Claims |> Seq.find(fun i -> i.Type = "user_id")
 
-                let! res = mediatr.Send(GetNotificationCountQuery(ctx.User.Identity.Name))
-                let test =
-                    setContentType ""
-                    >=> Successful.OK res
-                return! Successful.OK res next ctx
+                let! res = mediatr.Send(GetNotificationCountQuery("ctx.User.Identity.Name"))
+                return! Successful.ok (text (string(res))) next ctx
             }
 
     member this.Initialize() =
