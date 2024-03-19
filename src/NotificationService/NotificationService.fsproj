@@ -7,9 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Service\Queries\*.fs" />
-    <Compile Include="Service\Queries\Handlers\*.fs" />
-    <Compile Include="Transport\Initializer.fs" />
+    <Compile Include="Service/Queries/*.fs" />
+    <Compile Include="Service/Queries/Handlers/*.fs" />
+    <Compile Include="Service/Commands/*.fs" />
+    <Compile Include="Service/Commands/Handlers/*.fs" />
+    <Compile Include="Transport/Initializer.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -28,6 +30,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NotificationService.Database\NotificationService.Database.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <InternalsVisibleTo Include="NotificationService.UnitTests" />
   </ItemGroup>
 
 </Project>

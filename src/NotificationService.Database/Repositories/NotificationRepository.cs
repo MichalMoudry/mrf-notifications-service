@@ -1,6 +1,7 @@
 using System.Data;
 using Dapper;
 using NotificationService.Database.Api;
+using NotificationService.Database.Model.Domain;
 using NotificationService.Database.Model.Dto;
 using NotificationService.Database.Queries;
 
@@ -24,10 +25,17 @@ public sealed class NotificationRepository(IDbConnection conn) : INotificationRe
         );
 
     /// <inheritdoc/>
-    public async Task SoftDeleteNotification(Guid notificationId)
+    public Task AddNotification(Notification notification)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc/>
+    public async Task SoftDeleteNotification(IDbTransaction tx, Guid notificationId)
         => await conn.ExecuteAsync(
             SqlQueries.SoftDeleteNotification,
-            new { NotificationId = notificationId }
+            new { NotificationId = notificationId },
+            tx
         );
 
     /// <inheritdoc/>

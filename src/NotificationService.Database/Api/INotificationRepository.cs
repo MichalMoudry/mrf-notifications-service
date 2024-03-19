@@ -1,4 +1,5 @@
 using System.Data;
+using NotificationService.Database.Model.Domain;
 using NotificationService.Database.Model.Dto;
 
 namespace NotificationService.Database.Api;
@@ -19,9 +20,14 @@ public interface INotificationRepository
     Task<IEnumerable<NotificationInformation>> GetNotifications(string userId);
 
     /// <summary>
+    /// Method for adding a new notification into the database.
+    /// </summary>
+    Task AddNotification(Notification notification);
+
+    /// <summary>
     /// Method for soft deleting a specific notification.
     /// </summary>
-    Task SoftDeleteNotification(Guid notificationId);
+    Task SoftDeleteNotification(IDbTransaction tx, Guid notificationId);
 
     /// <summary>
     /// Method for deleting all soft deleted notifications in the database.

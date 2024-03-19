@@ -12,7 +12,7 @@ type Initializer() =
                 let mediatr = ctx.GetService<IMediator>()
                 //let userId = ctx.User.Claims |> Seq.find(fun i -> i.Type = "user_id")
 
-                let! res = mediatr.Send(GetNotificationCountQuery("ctx.User.Identity.Name"))
+                let! res = mediatr.Send(GetNotificationCount("ctx.User.Identity.Name"))
                 return! Successful.ok (text (string(res))) next ctx
             }
 

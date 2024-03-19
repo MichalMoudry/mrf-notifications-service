@@ -5,8 +5,9 @@ open NotificationService.Database.Api
 open NotificationService.Service.Queries
 
 /// A handler class for the GetNotificationCountQuery query.
-type GetNotificationCountQueryHandler(repository: INotificationRepository) =
-    interface IRequestHandler<GetNotificationCountQuery, int> with
+[<Sealed>]
+type internal GetNotificationCountHandler(repository: INotificationRepository) =
+    interface IRequestHandler<GetNotificationCount, int> with
         member this.Handle(request, cancellationToken) =
             task {
                 if cancellationToken.IsCancellationRequested then
