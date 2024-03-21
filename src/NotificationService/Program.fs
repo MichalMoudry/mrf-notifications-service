@@ -2,7 +2,6 @@ namespace NotificationService
 #nowarn "20"
 
 open System
-open System.Data
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Server.Kestrel.Core
 open Microsoft.Extensions.DependencyInjection
@@ -27,7 +26,7 @@ module Program =
         builder.Services.Configure<KestrelServerOptions>(
             fun (i: KestrelServerOptions) -> i.AddServerHeader <- false
         )
-        
+
         let dbConnectionString =
             match builder.Environment.IsDevelopment() with
             | true -> builder.Configuration["DbConnection"]

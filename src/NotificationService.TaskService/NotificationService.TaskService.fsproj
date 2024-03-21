@@ -2,10 +2,10 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <UserSecretsId>dotnet-NotificationService.TaskService-7B932563-1CAA-482E-B7B9-EAA86BB19F58</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <PublishAot>true</PublishAot>
+        <InvariantGlobalization>true</InvariantGlobalization>
     </PropertyGroup>
-
 
     <ItemGroup>
         <Compile Include="Worker.fs"/>
@@ -22,4 +22,9 @@
       </Content>
       <Content Include="Dockerfile" />
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NotificationService.Database\NotificationService.Database.csproj" />
+    </ItemGroup>
+
 </Project>
