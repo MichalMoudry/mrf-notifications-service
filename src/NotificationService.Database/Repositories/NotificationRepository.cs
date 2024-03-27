@@ -12,17 +12,27 @@ public sealed class NotificationRepository(IDbConnection conn) : INotificationRe
 {
     /// <inheritdoc/>
     public Task<int> GetNotificationsCount(string userId)
-        => conn.QuerySingleAsync<int>(
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("UserId", userId);
+
+        return conn.QuerySingleAsync<int>(
             SqlQueries.GetNotificationsCount,
-            new { UserId = userId }
+            parameters
         );
+    }
 
     /// <inheritdoc/>
     public Task<IEnumerable<NotificationInformation>> GetNotifications(string userId)
-        => conn.QueryAsync<NotificationInformation>(
+    {
+        var parameters = new DynamicParameters();
+        parameters.Add("UserId", userId);
+
+        return conn.QueryAsync<NotificationInformation>(
             SqlQueries.GetNotifications,
-            new { UserId = userId }
+            parameters
         );
+    }
 
     /// <inheritdoc/>
     public Task AddNotification(Notification notification)

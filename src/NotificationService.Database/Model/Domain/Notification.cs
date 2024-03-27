@@ -9,4 +9,14 @@ public sealed class Notification : Entity
     public string? UserId { get; init; }
 
     public bool IsDeleted { get; init; }
+
+    public Notification()
+    {
+        var now = DateTime.Now;
+
+        Id = Guid.NewGuid();
+        IsDeleted = false;
+        DateAdded = now;
+        DateUpdated = now;
+    }
 }
